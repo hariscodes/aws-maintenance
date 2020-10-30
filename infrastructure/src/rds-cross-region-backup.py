@@ -41,6 +41,12 @@ kms_key_parameter = template.add_parameter(Parameter(
     Description="KMS Key ARN in target region. Required if using encrypted RDS instances, optional otherwise.",
 ))
 
+snapshot_retention_parameter = template.add_parameter(Parameter(
+    "SnapshotRetentionParameter",
+    Type="Number",
+    Description="Optional: Number of Snapshots to retain in target region. Defaults to 1.",
+))
+
 s3_bucket_parameter = template.add_parameter(Parameter(
     "S3BucketParameter",
     Type="String",
@@ -70,6 +76,7 @@ template.add_metadata({
                     "TargetRegionParameter",
                     "S3BucketParameter",
                     "SourceZipParameter",
+                    "SnapshotRetentionParameter",
                 ]
             },
             {
@@ -102,6 +109,7 @@ template.add_metadata({
             "TargetRegionParameter": {"default": "Target region"},
             "DatabasesToUse": {"default": "Databases to use for"},
             "KMSKeyParameter": {"default": "KMS Key in target region"},
+            "SnapshotRetentionParameter": {"default": "Number of snapshots to be retained in target region"},
             "IncludeAuroraClusters": {"default": "Use for Aurora clusters"},
             "ClustersToUse": {"default": "Aurora clusters to use for"},
             "S3BucketParameter": {"default": "Name of S3 bucket"},
@@ -183,7 +191,8 @@ backup_rds_function = template.add_resource(awslambda.Function(
             'SOURCE_REGION': Ref(AWS_REGION),
             'TARGET_REGION': Ref(target_region_parameter),
             'KMS_KEY_ID': Ref(kms_key_parameter),
-            'CLUSTERS_TO_USE': Ref(clusters_to_use_parameter)
+            'CLUSTERS_TO_USE': Ref(clusters_to_use_parameter),
+            'SNAPSHOT_RETENTION': Ref(snapshot_retention_parameter)
         }
     )
 ))
