@@ -41,7 +41,8 @@
                     "Parameters": [
                         "TargetRegionParameter",
                         "S3BucketParameter",
-                        "SourceZipParameter"
+                        "SourceZipParameter",
+                        "SnapshotRetentionParameter"
                     ]
                 },
                 {
@@ -83,6 +84,9 @@
                 "KMSKeyParameter": {
                     "default": "KMS Key in target region"
                 },
+                "SnapshotRetentionParameter": {
+                    "default": "Number of snapshots to be retained in target region"
+                },
                 "S3BucketParameter": {
                     "default": "Name of S3 bucket"
                 },
@@ -117,6 +121,11 @@
         "KMSKeyParameter": {
             "Description": "KMS Key ARN in target region. Required if using encrypted RDS instances, optional otherwise.",
             "Type": "String"
+        },
+        "SnapshotRetentionParameter": {
+            "Default": 1,
+            "Description": "Optional: Number of Snapshots to retain in target region. Defaults to 1.",
+            "Type": "Number"
         },
         "S3BucketParameter": {
             "Description": "Name of the S3 bucket where you uploaded the source code zip",
@@ -196,6 +205,9 @@
                         },
                         "TARGET_REGION": {
                             "Ref": "TargetRegionParameter"
+                        },
+                        "SNAPSHOT_RETENTION": {
+                            "Ref": "SnapshotRetentionParameter"
                         }
                     }
                 },
