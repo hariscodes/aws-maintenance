@@ -31,6 +31,7 @@ import botocore
 SOURCE_REGION = os.environ.get("SOURCE_REGION")
 TARGET_REGION = os.environ.get("TARGET_REGION")
 KMS_KEY_ID = os.environ.get("KMS_KEY_ID", "")
+SNAPSHOT_RETENTION = os.environ.get("SNAPSHOT_RETENTION",1)
 
 # Global clients
 SOURCE_CLIENT = boto3.client("rds", SOURCE_REGION)
@@ -221,10 +222,10 @@ def remove_old_snapshots(instance_name, is_aurora):
     # List the snapshots by time created
     snapshots = get_snapshots_list(response, is_aurora)
 
-    # Sort snapshots by time and get all other than the latest one
-    if len(snapshots) > 1:
+    # Sort snapshots by time and get all past the snapshot retention limit (default 1)
+    if len(snapshots) > SNAPSHOT_RETENTION:
         sorted_snapshots = sorted(snapshots.items(), key=operator.itemgetter(1), reverse=True)
-        snapshots_to_remove = [i[0] for i in sorted_snapshots[1:]]
+        snapshots_to_remove = [i[0] for i in sorted_snapshots[SNAPSHOT_RETENTION:]]
         print("Found {} snapshot(s) to remove".format(len(snapshots_to_remove)))
 
         # Remove the snapshots
