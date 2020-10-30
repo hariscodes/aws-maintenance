@@ -2,28 +2,31 @@
 Collection of scripts and Lambda functions used for maintaining various AWS resources.
 
 ## Table of contents
-- [Cross-region RDS backups](#cross-region-rds-backups-backup-rdspy)
-    * [Regions](#regions)
-    * [Limit to specific RDS instances](#limit-to-specific-rds-instances)
-    * [Encryption](#encryption)
-    * [Aurora clusters](#aurora-clusters)
-    * [Guide](#guide)
-        * [How to use for the first time](#how-to-use-for-the-first-time)
-        * [How to update to the latest version](#how-to-update-to-the-latest-version)
-        * [How to test](#how-to-test)
-    * [Related blog posts](#related-blog-posts)
-- [Automated EC2 storage backups and retention management](#automated-ec2-storage-backups-and-retention-management-ebs-snapshotspy)
-    * [Notes](#notes)
-    * [Guide](#guide-1)
-        * [How to use for the first time](#how-to-use-for-the-first-time-1)
-        * [How to update to the latest version](#how-to-update-to-the-latest-version-1)
-        * [How to test](#how-to-test-1)
-        * [How to modify names of tags used by code or default retention period](#how-to-modify-names-of-tags-used-by-code-or-default-retention-period)
-    * [Related blog posts](#related-blog-posts-1) 
-- [Monitor CloudTrail events](#monitor-cloudtrail-events-cloudtrail-monitorpy)
-- [Other Lambdas](#other-lambdas)
-    * [clean-base-images.py and clean-release-images.py](#clean-base-imagespy-and-clean-release-imagespy)
-    * [clean-es-indices.py](#clean-es-indicespy)
+- [aws-maintenance](#aws-maintenance)
+  - [Table of contents](#table-of-contents)
+  - [Cross-region RDS backups (backup-rds.py)](#cross-region-rds-backups-backup-rdspy)
+    - [Regions](#regions)
+    - [Limit to specific RDS instances](#limit-to-specific-rds-instances)
+    - [Encryption](#encryption)
+    - [Snapshot Retention](#snapshot-retention)
+    - [Aurora clusters](#aurora-clusters)
+    - [Guide](#guide)
+      - [How to use for the first time](#how-to-use-for-the-first-time)
+      - [How to update to the latest version](#how-to-update-to-the-latest-version)
+      - [How to test](#how-to-test)
+    - [Related blog posts](#related-blog-posts)
+  - [Automated EC2 storage backups and retention management (ebs-snapshots.py)](#automated-ec2-storage-backups-and-retention-management-ebs-snapshotspy)
+    - [Notes](#notes)
+    - [Guide](#guide-1)
+      - [How to use for the first time](#how-to-use-for-the-first-time-1)
+      - [How to update to the latest version](#how-to-update-to-the-latest-version-1)
+      - [How to test](#how-to-test-1)
+      - [How to modify names of tags used by code or default retention period](#how-to-modify-names-of-tags-used-by-code-or-default-retention-period)
+    - [Related blog posts](#related-blog-posts-1)
+  - [Monitor CloudTrail events (cloudtrail-monitor.py)](#monitor-cloudtrail-events-cloudtrail-monitorpy)
+  - [Other Lambdas](#other-lambdas)
+    - [clean-base-images.py and clean-release-images.py](#clean-base-imagespy-and-clean-release-imagespy)
+    - [clean-es-indices.py](#clean-es-indicespy)
     
 
 
@@ -60,6 +63,10 @@ that key.
 If you don't use encryption and don't want your snapshots to be encrypted, leave the `KMS Key in target region` 
 parameter empty.
 
+### Snapshot Retention
+By default, only 1 snapshot is retained in the target region. If you'd like additional snapshots to be retained, you can
+specify how many using the `Number of snapshots to be retained in target region` parameter. 
+
 ### Aurora clusters
 Since Aurora clusters do not offer an event notification for their automated backups, a daily schedule needs to be used
 to copy the latest snapshot over to the target region. If you're using clusters, set `Use for Aurora clusters` to 'Yes'
@@ -83,6 +90,8 @@ The snapshots will be copied over once a day, at a random time of AWS choosing (
     provide a path to the file in S3 (for example `lambda_code/backup-rds.zip`)
     - Required/Optional: **KMS Key in target region** - if your RDS instances are encrypted, provide an ARN of a KMS key
      in the target region. See Encryption section above. 
+    - Optional: **Number of snapshots to be retained in target region** - If you'd like more than 1 snapshot to be retained
+    in the target region, specify how many.
     - Optional: **Databases to use for** - if you want limit the functionality to only specific RDS instances, provide 
     a comma-delimited list of their names.
     - Optional: **Use for Aurora clusters** - select "Yes" if you have any Aurora Clusters that you want this code to work
