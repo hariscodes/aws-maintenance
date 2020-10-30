@@ -44,6 +44,7 @@ kms_key_parameter = template.add_parameter(Parameter(
 snapshot_retention_parameter = template.add_parameter(Parameter(
     "SnapshotRetentionParameter",
     Type="Number",
+    Default=1,
     Description="Optional: Number of Snapshots to retain in target region. Defaults to 1.",
 ))
 
@@ -109,10 +110,10 @@ template.add_metadata({
             "TargetRegionParameter": {"default": "Target region"},
             "DatabasesToUse": {"default": "Databases to use for"},
             "KMSKeyParameter": {"default": "KMS Key in target region"},
-            "SnapshotRetentionParameter": {"default": "Number of snapshots to be retained in target region"},
             "IncludeAuroraClusters": {"default": "Use for Aurora clusters"},
             "ClustersToUse": {"default": "Aurora clusters to use for"},
             "S3BucketParameter": {"default": "Name of S3 bucket"},
+            "SnapshotRetentionParameter": {"default": "Number of snapshots to be retained in target region"},
             "SourceZipParameter": {"default": "Name of ZIP file"},
         }
     }

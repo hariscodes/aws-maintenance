@@ -84,11 +84,11 @@
                 "KMSKeyParameter": {
                     "default": "KMS Key in target region"
                 },
-                "SnapshotRetentionParameter": {
-                    "default": "Number of snapshots to be retained in target region"
-                },
                 "S3BucketParameter": {
                     "default": "Name of S3 bucket"
+                },
+                "SnapshotRetentionParameter": {
+                    "default": "Number of snapshots to be retained in target region"
                 },
                 "SourceZipParameter": {
                     "default": "Name of ZIP file"
@@ -122,14 +122,14 @@
             "Description": "KMS Key ARN in target region. Required if using encrypted RDS instances, optional otherwise.",
             "Type": "String"
         },
+        "S3BucketParameter": {
+            "Description": "Name of the S3 bucket where you uploaded the source code zip",
+            "Type": "String"
+        },
         "SnapshotRetentionParameter": {
             "Default": 1,
             "Description": "Optional: Number of Snapshots to retain in target region. Defaults to 1.",
             "Type": "Number"
-        },
-        "S3BucketParameter": {
-            "Description": "Name of the S3 bucket where you uploaded the source code zip",
-            "Type": "String"
         },
         "SourceZipParameter": {
             "Default": "backup-rds.zip",
@@ -200,14 +200,14 @@
                         "KMS_KEY_ID": {
                             "Ref": "KMSKeyParameter"
                         },
+                        "SNAPSHOT_RETENTION": {
+                            "Ref": "SnapshotRetentionParameter"
+                        },
                         "SOURCE_REGION": {
                             "Ref": "AWS::Region"
                         },
                         "TARGET_REGION": {
                             "Ref": "TargetRegionParameter"
-                        },
-                        "SNAPSHOT_RETENTION": {
-                            "Ref": "SnapshotRetentionParameter"
                         }
                     }
                 },
